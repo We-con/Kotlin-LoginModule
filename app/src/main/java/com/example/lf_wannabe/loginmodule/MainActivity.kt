@@ -13,12 +13,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        login_btn.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                intent = Intent(applicationContext, LoginActivity::class.java)
-                startActivity(intent)
-            }
-        })
+//        login_btn.setOnClickListener(object : View.OnClickListener{
+//            override fun onClick(p0: View?) {
+//                intent = Intent(applicationContext, LoginActivity::class.java)
+//                startActivity(intent)
+//            }
+//        })
+        login_btn.setOnClickListener {
+            intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
 
         if(intent.extras != null){
             user_status.setText(intent.extras.getString("response"))

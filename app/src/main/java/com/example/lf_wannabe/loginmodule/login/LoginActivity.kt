@@ -39,16 +39,16 @@ class LoginActivity: AppCompatActivity() {
                 var status = ""
                 if(success){
                     with(OAuthLogin.getInstance()){
-                        status += "status : " + getState(this@LoginActivity).toString() + "\n" +
-                                "accessToken : " + getAccessToken(this@LoginActivity) + "\n" +
-                                "refreshToken : " + getRefreshToken(this@LoginActivity) + "\n" +
-                                "expiresAt : " + getExpiresAt(this@LoginActivity) + "\n" +
-                                "tokenType : " + getTokenType(this@LoginActivity)
+                        status += "status : ${getState(this@LoginActivity)}\n" +
+                                "accessToken : ${getAccessToken(this@LoginActivity)}\n" +
+                                "refreshToken : ${getRefreshToken(this@LoginActivity)}\n" +
+                                "expiresAt : ${getExpiresAt(this@LoginActivity)}\n" +
+                                "tokenType : ${getTokenType(this@LoginActivity)}"
                     }
                 } else {
                     with(OAuthLogin.getInstance()){
-                        status += "errorCode : " + getLastErrorCode(this@LoginActivity).toString() + "\n" +
-                                "errorDesc : " + getLastErrorDesc(this@LoginActivity) + "\n"
+                        status += "errorCode : ${getLastErrorCode(this@LoginActivity)}\n" +
+                                "errorDesc : ${getLastErrorDesc(this@LoginActivity)}\n"
                     }
                 }
 
@@ -74,9 +74,8 @@ class LoginActivity: AppCompatActivity() {
 
         override fun onSessionOpenFailed(exception: KakaoException?) {
             Toast.makeText(applicationContext, "세션 실패====", Toast.LENGTH_SHORT).show()
-            if(exception != null) {
-                Log.d("MIM", exception.toString())
-            }
+
+            exception?.let { Log.d("MIM", exception.toString()) }
         }
     }
 
