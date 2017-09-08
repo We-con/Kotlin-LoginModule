@@ -3,7 +3,6 @@ package com.example.lf_wannabe.loginmodule
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import com.example.lf_wannabe.loginmodule.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
