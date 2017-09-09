@@ -3,7 +3,9 @@ package com.example.lf_wannabe.loginmodule.login
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
+import com.example.lf_wannabe.loginmodule.BaseApplication
 import com.example.lf_wannabe.loginmodule.MainActivity
 import com.kakao.auth.ErrorCode
 import com.kakao.network.ErrorResult
@@ -34,7 +36,7 @@ class KakaoSignupActivity: AppCompatActivity(){
                 super.onFailure(errorResult)
 
                 var message = "failed to get user info. msg=" + errorResult
-                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                Log.d("MIM_LOGIN", message)
 
                 var result: ErrorCode = ErrorCode.valueOf(errorResult?.errorCode)
                 if (result == ErrorCode.CLIENT_ERROR_CODE) {
@@ -53,6 +55,11 @@ class KakaoSignupActivity: AppCompatActivity(){
             }
 
             override fun onSuccess(result: UserProfile?) {
+                with(BaseApplication.prefs!!){
+                    snsType = "KAKAO"
+                    userName = result!!.nickname
+                    userThumnail = result!!.thumbnailImagePath
+                }
                 Toast.makeText(applicationContext, "KAKAO : " + result, Toast.LENGTH_SHORT).show()
                 redirectMainActivity("KAKAO : " + result) // 로그인 성공시 MainActivity로
             }
@@ -61,7 +68,6 @@ class KakaoSignupActivity: AppCompatActivity(){
 
     private fun redirectMainActivity(reponse: String) {
         var intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("response", reponse)
         startActivity(intent)
         finish()
     }

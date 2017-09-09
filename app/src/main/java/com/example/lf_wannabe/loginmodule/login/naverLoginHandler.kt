@@ -3,6 +3,10 @@ package com.example.lf_wannabe.loginmodule.login
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
+import android.util.Log
+import android.widget.Toast
+import com.example.lf_wannabe.loginmodule.BaseApplication
 import com.example.lf_wannabe.loginmodule.MainActivity
 import com.nhn.android.naverlogin.OAuthLogin
 import com.nhn.android.naverlogin.OAuthLoginHandler
@@ -11,32 +15,53 @@ import com.nhn.android.naverlogin.OAuthLoginHandler
  * Created by lf_wannabe on 04/09/2017.
  */
 class naverLoginHandler(var ac: Activity) : OAuthLoginHandler() {
-    override fun run(success: Boolean) {
-        var status = ""
-        if(success){
-            with(OAuthLogin.getInstance()){
-                status += "status : ${getState(ac.applicationContext)}\n" +
-                        "accessToken : ${getAccessToken(ac.applicationContext)}\n" +
-                        "refreshToken : ${getRefreshToken(ac.applicationContext)}\n" +
-                        "expiresAt : ${getExpiresAt(ac.applicationContext)}\n" +
-                        "tokenType : ${getTokenType(ac.applicationContext)}"
+    val mOAuthLoginInstance = OAuthLogin.getInstance()
+    var user_profile = ""
 
-                redirectMainActivity(status)
+    override fun run(success: Boolean) {
+        if(success){
+            with(mOAuthLoginInstance){
+                with(BaseApplication.prefs!!){
+                    snsType = "NAVER"
+                    userToken = getAccessToken(ac.applicationContext)
+                    userTokenType = getTokenType(ac.applicationContext)
+                    //xml 파싱전 잠시
+                    userName = getAccessToken(ac.applicationContext)
+                }
+                requestAPITask().execute()
+                redirectMainActivity()
             }
+
         } else {
-            with(OAuthLogin.getInstance()){
-                status += "errorCode : ${getLastErrorCode(ac.applicationContext)}\n" +
-                        "errorDesc : ${getLastErrorDesc(ac.applicationContext)}\n"
+            with(mOAuthLoginInstance){
+                Log.d("MIM_LOGIN", "errorCode : ${getLastErrorCode(ac.applicationContext)}\n" +
+                        "errorDesc : ${getLastErrorDesc(ac.applicationContext)}\n")
 
                 redirectLoginActivity()
             }
         }
-
     }
 
-    private fun redirectMainActivity(reponse: String) {
+    inner class requestAPITask : AsyncTask<Void, String, String>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+        }
+
+        override fun doInBackground(vararg p0: Void?): String {
+            val url = "https://apis.naver.com/nidlogin/nid/getUserProfile.xml"
+            val at = mOAuthLoginInstance.getAccessToken(ac.applicationContext)
+            user_profile = mOAuthLoginInstance.requestApi(ac.applicationContext, at, url)
+
+            return user_profile
+        }
+
+        override fun onPostExecute(result: String?) {
+            Toast.makeText(ac.applicationContext, result, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun redirectMainActivity() {
         var intent = Intent(ac, MainActivity::class.java)
-        intent.putExtra("response", reponse)
         ac.startActivity(intent)
         ac.finish()
     }
