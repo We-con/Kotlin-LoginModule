@@ -15,6 +15,7 @@ class BaseApplication: Application() {
 
     companion object {
         private lateinit var instance: BaseApplication
+        var prefs: ApplicationPreferences? = null
 
         fun getApplicationContext(): BaseApplication {
 //            if(instance != null)
@@ -25,8 +26,9 @@ class BaseApplication: Application() {
     }
 
     override fun onCreate() {
-        super.onCreate()
         instance = this
+        prefs = ApplicationPreferences(applicationContext)
+        super.onCreate()
 
         initLogin()
     }

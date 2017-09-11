@@ -32,7 +32,6 @@
             android:label="OAuth2.0 In-app"/>
 
         <activity android:name="com.example.lf_wannabe.loginmodule.login.KakaoSignupActivity" />
-        <activity android:name="com.example.lf_wannabe.loginmodule.login.NaverSignupActivity" />
     </application>
 
 </manifest>
